@@ -85,3 +85,38 @@ To run this workflow on your own n8n instance:
    * Double-click any **Telegram** node, select your Telegram credential, and enter your **Bot API Token**.
    * Double-click the **Groq Chat Model** node, select your Groq credential, and enter your **Groq API Key**.
 6. Toggle the workflow to **Active** (top right) to launch your bot!
+
+---
+
+## 📸 Demo & Screenshots
+
+Here is a step-by-step walkthrough of the bot's user experience:
+
+### 1. Main Menu Trigger
+Send `/news` or `/start` to select a news category:
+<p align="center">
+  <img src="./assets/1_menu.png" alt="Bot Category Selection Menu" width="350"/>
+</p>
+
+### 2. Tech News Stream
+Selecting the **Tech** category triggers the aggregator:
+<p align="center">
+  <img src="./assets/2_fetching_tech.png" alt="Tech News Loading & First Article" width="280"/>
+  <img src="./assets/3_tech_article.png" alt="Tech Article AI Summary" width="280"/>
+  <img src="./assets/4_tech_complete.png" alt="Tech Digest Complete" width="280"/>
+</p>
+
+### 3. World News Stream
+Selecting **World** news fetches international coverage:
+<p align="center">
+  <img src="./assets/5_fetching_world.png" alt="World News Loading & First Article" width="280"/>
+  <img src="./assets/6_world_article.png" alt="World Article AI Summary" width="280"/>
+</p>
+
+### 4. National News Stream
+Selecting **National** fetches Indian news:
+<p align="center">
+  <img src="./assets/7_fetching_national.png" alt="National News Loading & First Article" width="280"/>
+  <img src="./assets/8_national_article.png" alt="National Article Summary" width="280"/>
+  <img src="./assets/9_national_complete.png" alt="National Digest Complete" width="280"/>
+</p>
