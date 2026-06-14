@@ -1,0 +1,1928 @@
+{
+  "name": "Telegram News Digest Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "id": "3d411a78-dbe1-4dec-b630-426a11422cff",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        9712,
+        2512
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json?.message?.text ?? '' }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "/news",
+                    "id": "5e907902-33ac-47be-8d06-bf198de7133d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json?.message?.text ?? '' }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "/start",
+                    "id": "84a9c661-a276-44d0-8d22-05438570714e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "46316712-cac2-41ab-a6c6-32b46662b83e",
+                    "leftValue": "={{ $json?.callback_query?.data ?? '' }}",
+                    "rightValue": "nothing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "id": "907fdfc3-f511-45ba-a5f1-e5b200b106b2",
+      "name": "Detect Event Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        9984,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "📰 *Choose your news category:*",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🖥️ Tech",
+                    "additionalFields": {
+                      "callback_data": "tech"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🌍 World",
+                    "additionalFields": {
+                      "callback_data": "world"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🌍 National",
+                    "additionalFields": {
+                      "callback_data": "national"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "d57a96ac-2570-4c8c-b845-fee32711f24f",
+      "name": "Send Category Keyboard",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        10208,
+        2256
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callback_query.id }}",
+        "additionalFields": {}
+      },
+      "id": "0cd665c1-89a0-4d00-b928-7896c14ed112",
+      "name": "Answer Callback Query",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        10224,
+        2672
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Detect Event Type').first().json.callback_query.data }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "tech",
+                    "id": "f7aa519a-319a-444c-804b-5a0a092dad5f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Detect Event Type').first().json.callback_query.data }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "world",
+                    "id": "3695ec00-ee07-437b-baba-3fc85ab6adb3"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Detect Event Type').first().json.callback_query.data }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "national",
+                    "id": "99a7f913-5fc5-4fe2-a13f-64d6bb15f638"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "id": "e8a205ed-7f89-46d7-bebb-0701b1e14da7",
+      "name": "Route by Category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        10448,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "id": "8400226f-27a3-4ee9-a4a2-7a8a086c12bd",
+      "name": "RSS TechCrunch",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        1456
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.arstechnica.com/arstechnica/index",
+        "options": {}
+      },
+      "id": "aceeda4b-51be-4e08-b1bb-01cc0eb6910f",
+      "name": "RSS Ars Technica",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        1600
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://hnrss.org/frontpage",
+        "options": {}
+      },
+      "id": "0eea3798-099a-4515-b59c-153d49e6164e",
+      "name": "RSS Hacker News",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        1744
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.theverge.com/rss/index.xml",
+        "options": {}
+      },
+      "id": "14502e78-2411-471c-8f30-476264904d0f",
+      "name": "RSS The Verge",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        1888
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst items = $input.all();\n\n// Core blocklist keywords\nconst spamKeywords = [\n  'promo', 'coupon', 'discount', 'deal', 'sale', 'save $', \n  '% off', 'price drop', 'sponsored', 'giveaway', 'bundle'\n];\n\nconst uniqueAndClean = items.filter(i => {\n  const url = i.json.link || i.json.url || '';\n  const title = (i.json.title || '').toLowerCase();\n  const snippet = (i.json.contentSnippet || '').toLowerCase();\n\n  // 1. Skip if we've already seen this URL\n  if (seen.has(url)) return false;\n\n  // 2. Skip if title or snippet contains any spam keyword\n  const isSpam = spamKeywords.some(keyword => title.includes(keyword) || snippet.includes(keyword));\n  if (isSpam) return false;\n\n  seen.add(url);\n  return true;\n});\n\n// Sort by date (newest first)\nuniqueAndClean.sort((a,b) => new Date(b.json.pubDate||0) - new Date(a.json.pubDate||0));\n\n// Return top 10 clean items\nreturn uniqueAndClean.slice(0,10).map(i => ({ \n  json: { \n    ...i.json, \n    _category: 'tech', \n    _chatId: $('Telegram Trigger').first().json.callback_query.message.chat.id \n  } \n}));"
+      },
+      "id": "2250c022-bffe-499d-9925-7013e15ac1ea",
+      "name": "Deduplicate Tech",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12256,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst originalItems = $('Deduplicate Tech').all();\nconst chatId = $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id\n             || $('Deduplicate Tech').first()?.json?._chatId;\n\nreturn items.map((item, i) => {\n  const orig = originalItems[i]?.json || {};\n\n  // Comprehensive RSS image extraction (multiple field formats)\n  const imageUrl =\n    orig.enclosure?.url ||\n    orig['media:content']?.['$']?.url ||\n    orig['media:content']?.url ||\n    orig['media:thumbnail']?.['$']?.url ||\n    orig['media:thumbnail']?.url ||\n    orig.image?.url ||\n    orig.image?.link ||\n    (Array.isArray(orig['media:content'])\n      ? orig['media:content'][0]?.['$']?.url\n      : null) ||\n    null;\n\n  return {\n    json: {\n      ...orig,\n      summary: item.json.text || item.json.output || item.json.response || '',\n      imageUrl: imageUrl || null,\n      _category: 'tech',\n      _chatId: chatId || orig._chatId,\n    },\n  };\n});"
+      },
+      "id": "82c297b9-cfc9-4af7-89e3-325b61e7ceaa",
+      "name": "Parse Groq Tech",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13136,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json._chatId }}",
+        "file": "={{ $json.imageUrl }}",
+        "additionalFields": {
+          "caption": "=🖥️ <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "905d35ee-d9a2-4e73-910b-d5a18ea9fe88",
+      "name": "Send Tech Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14384,
+        1520
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "4c201f1b-5a25-4a84-8168-80288ee943bf",
+      "name": "Wait Between Tech Messages",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        14672,
+        1760
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bcd42ee0-7af0-4949-b34d-8d1df7ea579f",
+      "name": "Loop Tech Articles",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        13552,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "5e76c13c-8f25-4147-8c3e-8ce61e93d68c",
+      "name": "Wait Between World Messages",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        14688,
+        2656
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/ndtvnews-top-stories",
+        "options": {}
+      },
+      "id": "4a48ff79-007a-43fc-9428-2b0bb307d0aa",
+      "name": "RSS NDTV",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        3088
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
+        "options": {}
+      },
+      "id": "790c6b39-e7b4-4947-abf4-231d318e177b",
+      "name": "RSS Times of India",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        3248
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.thehindu.com/feeder/default.rss",
+        "options": {}
+      },
+      "id": "2374ae7c-2562-40c8-9576-e99a3b90fccb",
+      "name": "RSS The Hindu",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        3408
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
+        "options": {}
+      },
+      "id": "29bb925b-9650-47f2-9d08-de22f4051f50",
+      "name": "RSS Hindustan Times",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        3568
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://indianexpress.com/feed/",
+        "options": {}
+      },
+      "id": "9375b4f1-ac33-4e40-b522-361aec512bbc",
+      "name": "RSS Indian Express",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        3728
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst items = $input.all();\n\n// Core blocklist keywords\nconst spamKeywords = [\n  'promo', 'coupon', 'discount', 'deal', 'sale', 'save $', \n  '% off', 'price drop', 'sponsored', 'giveaway', 'bundle'\n];\n\nconst uniqueAndClean = items.filter(i => {\n  const url = i.json.link || i.json.url || '';\n  const title = (i.json.title || '').toLowerCase();\n  const snippet = (i.json.contentSnippet || '').toLowerCase();\n\n  // 1. Skip if we've already seen this URL\n  if (seen.has(url)) return false;\n\n  // 2. Skip if title or snippet contains any spam keyword\n  const isSpam = spamKeywords.some(keyword => title.includes(keyword) || snippet.includes(keyword));\n  if (isSpam) return false;\n\n  seen.add(url);\n  return true;\n});\n\n// Sort by date (newest first)\nuniqueAndClean.sort((a,b) => new Date(b.json.pubDate||0) - new Date(a.json.pubDate||0));\n\n// Return top 10 clean items for National\nreturn uniqueAndClean.slice(0,10).map(i => ({ \n  json: { \n    ...i.json, \n    _category: 'national', \n    _chatId: $('Telegram Trigger').first().json.callback_query.message.chat.id \n  } \n}));"
+      },
+      "id": "ac4654f1-1223-4832-b9fb-414c7b17731c",
+      "name": "Deduplicate National",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12224,
+        3424
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst originalItems = $('Deduplicate National').all();\nconst chatId = $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id\n             || $('Deduplicate National').first()?.json?._chatId;\n\nreturn items.map((item, i) => {\n  const orig = originalItems[i]?.json || {};\n\n  // Comprehensive RSS image extraction (multiple field formats)\n  const imageUrl =\n    orig.enclosure?.url ||\n    orig['media:content']?.['$']?.url ||\n    orig['media:content']?.url ||\n    orig['media:thumbnail']?.['$']?.url ||\n    orig['media:thumbnail']?.url ||\n    orig.image?.url ||\n    orig.image?.link ||\n    (Array.isArray(orig['media:content'])\n      ? orig['media:content'][0]?.['$']?.url\n      : null) ||\n    null;\n\n  return {\n    json: {\n      ...orig,\n      summary: item.json.text || item.json.output || item.json.response || '',\n      imageUrl: imageUrl || null,\n      _category: 'national',\n      _chatId: chatId || orig._chatId,\n    },\n  };\n});"
+      },
+      "id": "9c685508-6303-4190-9f60-409692f64011",
+      "name": "Parse Groq National",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13104,
+        3424
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json._chatId }}",
+        "file": "={{ $json.imageUrl }}",
+        "additionalFields": {
+          "caption": "=🇮🇳 <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "2879e847-d704-4fe2-b76b-093808325a4f",
+      "name": "Send National Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14384,
+        3312
+      ],
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "1901ad82-61bb-44a3-a8a2-8b0a7bc92a77",
+      "name": "Wait Between National Messages",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        14672,
+        3520
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0397e07b-a3a8-4aec-8ee3-52754627abf7",
+      "name": "Loop National Articles",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        13504,
+        3424
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11680,
+        1664
+      ],
+      "id": "73cc58ee-eb36-4378-a313-818430ad2d1b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11680,
+        2464
+      ],
+      "id": "0290ba3a-13ea-4ee0-86fb-138ddb18221a",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11680,
+        3360
+      ],
+      "id": "131fde81-b8ff-443d-9c3f-bf75c73c0d8d",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Summarize this article in 3–4 sentences for a Telegram message.\nOUTPUT RULES: Only the summary text. No title, no URL, no emojis, no HTML tags (<b>, <a>, etc.), no asterisks (*), no underscores (_), no backticks (`), no angle brackets (< >), no markdown formatting of any kind.\n\nTitle: {{ $json.title }}\nContent: {{ $json.contentSnippet }}",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        12640,
+        1696
+      ],
+      "id": "940d2c90-acb9-4744-ab5c-7204d3ca3b9e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        12512,
+        1904
+      ],
+      "id": "46b19d3b-122d-4b0b-96f5-de008de361b1",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Summarize this article in 3–4 sentences for a Telegram message.\nOUTPUT RULES: Only the summary text. No title, no URL, no emojis, no HTML tags (<b>, <a>, etc.), no asterisks (*), no underscores (_), no backticks (`), no angle brackets (< >), no markdown formatting of any kind.\n\nTitle: {{ $json.title }}\nContent: {{ $json.contentSnippet }}",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        12640,
+        2512
+      ],
+      "id": "a3504d52-9306-438c-b6b0-dfed64575f10",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        12528,
+        2736
+      ],
+      "id": "c2a3f151-d1ce-48c0-aadc-dd9996c3c267",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Summarize this article in 3–4 sentences for a Telegram message.\nOUTPUT RULES: Only the summary text. No title, no URL, no emojis, no HTML tags (<b>, <a>, etc.), no asterisks (*), no underscores (_), no backticks (`), no angle brackets (< >), no markdown formatting of any kind.\n\nTitle: {{ $json.title }}\nContent: {{ $json.contentSnippet }}",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        12640,
+        3424
+      ],
+      "id": "2efd775e-af68-40cc-9e36-1956f726a8e9",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        12528,
+        3632
+      ],
+      "id": "44c9c842-bd2e-4f0f-bee3-320de41870e1",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst items = $input.all();\n\n// Core blocklist keywords\nconst spamKeywords = [\n  'promo', 'coupon', 'discount', 'deal', 'sale', 'save $', \n  '% off', 'price drop', 'sponsored', 'giveaway', 'bundle'\n];\n\nconst uniqueAndClean = items.filter(i => {\n  const url = i.json.link || i.json.url || '';\n  const title = (i.json.title || '').toLowerCase();\n  const snippet = (i.json.contentSnippet || '').toLowerCase();\n\n  // 1. Skip if we've already seen this URL\n  if (seen.has(url)) return false;\n\n  // 2. Skip if title or snippet contains any spam keyword\n  const isSpam = spamKeywords.some(keyword => title.includes(keyword) || snippet.includes(keyword));\n  if (isSpam) return false;\n\n  seen.add(url);\n  return true;\n});\n\n// Sort by date (newest first)\nuniqueAndClean.sort((a,b) => new Date(b.json.pubDate||0) - new Date(a.json.pubDate||0));\n\n// Return top 10 clean items for World\nreturn uniqueAndClean.slice(0,10).map(i => ({ \n  json: { \n    ...i.json, \n    _category: 'world', \n    _chatId: $('Telegram Trigger').first().json.callback_query.message.chat.id \n  } \n}));"
+      },
+      "id": "3de5d4bb-8fb2-47ac-8197-53665e5619fe",
+      "name": "Deduplicate World",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12256,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e1b5b86f-f7bc-454a-8858-08ba960155c6",
+      "name": "Loop World Articles",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        13520,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json._chatId }}",
+        "file": "={{ $json.imageUrl }}",
+        "additionalFields": {
+          "caption": "=🌍 <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "2eb01d6d-4922-4cca-a7f4-51dee1887c38",
+      "name": "Send World Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14400,
+        2432
+      ],
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+        "options": {}
+      },
+      "id": "25187b24-9d87-4c8a-8116-a70c78ba6677",
+      "name": "RSS BBC World",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        2176
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.reuters.com/reuters/worldNews",
+        "options": {}
+      },
+      "id": "256fd7ec-257d-4d44-9373-b4ad791961a2",
+      "name": "RSS Reuters World",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        2336
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.aljazeera.com/xml/rss/all.xml ",
+        "options": {}
+      },
+      "id": "802109a0-a816-426d-a072-8b575b64bd7b",
+      "name": "RSS Al Jazeera",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        2512
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://rss.dw.com/xml/rss-en-world ",
+        "options": {}
+      },
+      "id": "ab933d00-3b6b-4c6d-9bbd-536f3f1ed49e",
+      "name": "RSS DW World",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        2832
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.theguardian.com/world/rss",
+        "options": {}
+      },
+      "id": "57913c8f-c842-467d-b636-44c50b3757be",
+      "name": "RSS The Guardian",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        10880,
+        2672
+      ],
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst originalItems = $('Deduplicate World').all();\nconst chatId = $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id\n             || $('Deduplicate World').first()?.json?._chatId;\n\nreturn items.map((item, i) => {\n  const orig = originalItems[i]?.json || {};\n\n  // Comprehensive RSS image extraction (multiple field formats)\n  const imageUrl =\n    orig.enclosure?.url ||\n    orig['media:content']?.['$']?.url ||\n    orig['media:content']?.url ||\n    orig['media:thumbnail']?.['$']?.url ||\n    orig['media:thumbnail']?.url ||\n    orig.image?.url ||\n    orig.image?.link ||\n    (Array.isArray(orig['media:content'])\n      ? orig['media:content'][0]?.['$']?.url\n      : null) ||\n    null;\n\n  return {\n    json: {\n      ...orig,\n      summary: item.json.text || item.json.output || item.json.response || '',\n      imageUrl: imageUrl || null,\n      _category: 'world',\n      _chatId: chatId || orig._chatId,\n    },\n  };\n});"
+      },
+      "id": "92879016-6928-4f93-808f-9e7890bff22b",
+      "name": "Parse Groq World",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13104,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "messageId": "={{ $('Telegram Trigger').first().json.callback_query.message.message_id }}",
+        "text": "=⏳ Fetching *{{ $('Detect Event Type').first().json.callback_query.data }}* news, please wait…",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "15dcd9fd-34e6-41f1-bb59-73650fe965d5",
+      "name": "Edit Menu Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        10224,
+        2464
+      ],
+      "credentials": {
+        "telegramApi": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// OG Image Scraper — Microlink-free, no spread, no Proxy risk\nconst item = $input.item;\n\n// Pull only primitives we need — NO spread operator\nconst link     = String(item.json.link    || item.json.url || '');\nconst title    = String(item.json.title   || '');\nconst summary  = String(item.json.summary || item.json.contentSnippet || '');\nconst category = String(item.json._category || 'tech');\n\n// chatId: try item first, fall back to Telegram Trigger\nconst chatId =\n  item.json._chatId ||\n  $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id ||\n  null;\n\n// imageUrl from RSS (Parse Groq should already set this)\nlet imageUrl = item.json.imageUrl ? String(item.json.imageUrl) : null;\n\n// HTML escape — Telegram HTML mode\nfunction esc(s) {\n  return String(s || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;');\n}\n\n// Scrape OG image only when RSS gave us nothing\nif (!imageUrl && link) {\n  try {\n    const res = await fetch(link, {\n      method: 'GET',\n      headers: {\n        'User-Agent': 'Mozilla/5.0 (compatible; TelegramDigestBot/1.0)',\n        'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',\n      },\n      redirect: 'follow',\n      signal: AbortSignal.timeout(8000),\n    });\n\n    if (res.ok) {\n      const html = await res.text();\n\n      // og:image (both attribute orders)\n      imageUrl =\n        html.match(/<meta[^>]+property=[\"']og:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+property=[\"']og:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+name=[\"']twitter:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+name=[\"']twitter:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+property=[\"']og:image:secure_url[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        null;\n\n      if (imageUrl) imageUrl = imageUrl.trim();\n    }\n  } catch (_) {\n    imageUrl = null;\n  }\n}\n\n// Must be absolute http(s)\nif (imageUrl && !/^https?:\\/\\//i.test(imageUrl)) imageUrl = null;\n\nconst safeTitle = esc(title);\nconst safeSummary = (() => {\n  const s = esc(summary || 'No summary available.');\n  return s.length > 750 ? s.slice(0, 747) + '...' : s;\n})();\n\n// Return 100% fresh plain object — no spread, no Proxy, no nested 'json' keys\nreturn {\n  json: {\n    title,\n    link,\n    summary,\n    _chatId: chatId,\n    _category: category,\n    imageUrl: imageUrl,\n    _hasImage: imageUrl !== null,\n    _safeTitle: safeTitle,\n    _safeSummary: safeSummary,\n    _safeLink: link,\n  }\n};"
+      },
+      "id": "13cae22a-e973-474c-b66a-2a52e28e22da",
+      "name": "OG Scrape Tech",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13872,
+        1712
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "50ba1d69-df5a-463a-ba2f-00071a043f88",
+              "leftValue": "={{ $json.imageUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ef362a23-6b16-4029-9dc3-ca14dc7a235d",
+      "name": "IF Has Image Tech",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        14128,
+        1712
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json._chatId }}",
+        "text": "=🖥️ <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+        "additionalFields": {
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "92f2a578-cb3a-4934-91cf-c6ae451420e3",
+      "name": "Send Tech Text",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14400,
+        1776
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "=🖥️ <b>Tech digest complete!</b> All tech articles have been sent.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "c0b03a14-a3c8-47e8-a4d7-f0b675c79075",
+      "name": "Send Tech Done",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        13536,
+        1504
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// OG Image Scraper — Microlink-free, no spread, no Proxy risk\nconst item = $input.item;\n\n// Pull only primitives we need — NO spread operator\nconst link     = String(item.json.link    || item.json.url || '');\nconst title    = String(item.json.title   || '');\nconst summary  = String(item.json.summary || item.json.contentSnippet || '');\nconst category = String(item.json._category || 'world');\n\n// chatId: try item first, fall back to Telegram Trigger\nconst chatId =\n  item.json._chatId ||\n  $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id ||\n  null;\n\n// imageUrl from RSS (Parse Groq should already set this)\nlet imageUrl = item.json.imageUrl ? String(item.json.imageUrl) : null;\n\n// HTML escape — Telegram HTML mode\nfunction esc(s) {\n  return String(s || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;');\n}\n\n// Scrape OG image only when RSS gave us nothing\nif (!imageUrl && link) {\n  try {\n    const res = await fetch(link, {\n      method: 'GET',\n      headers: {\n        'User-Agent': 'Mozilla/5.0 (compatible; TelegramDigestBot/1.0)',\n        'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',\n      },\n      redirect: 'follow',\n      signal: AbortSignal.timeout(8000),\n    });\n\n    if (res.ok) {\n      const html = await res.text();\n\n      // og:image (both attribute orders)\n      imageUrl =\n        html.match(/<meta[^>]+property=[\"']og:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+property=[\"']og:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+name=[\"']twitter:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+name=[\"']twitter:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+property=[\"']og:image:secure_url[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        null;\n\n      if (imageUrl) imageUrl = imageUrl.trim();\n    }\n  } catch (_) {\n    imageUrl = null;\n  }\n}\n\n// Must be absolute http(s)\nif (imageUrl && !/^https?:\\/\\//i.test(imageUrl)) imageUrl = null;\n\nconst safeTitle = esc(title);\nconst safeSummary = (() => {\n  const s = esc(summary || 'No summary available.');\n  return s.length > 750 ? s.slice(0, 747) + '...' : s;\n})();\n\n// Return 100% fresh plain object — no spread, no Proxy, no nested 'json' keys\nreturn {\n  json: {\n    title,\n    link,\n    summary,\n    _chatId: chatId,\n    _category: category,\n    imageUrl: imageUrl,\n    _hasImage: imageUrl !== null,\n    _safeTitle: safeTitle,\n    _safeSummary: safeSummary,\n    _safeLink: link,\n  }\n};"
+      },
+      "id": "3d4f3af5-9eb4-43dc-9a27-8fcc77e5dd7f",
+      "name": "OG Scrape World",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13872,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d8fcea14-4ff6-471c-87de-b23fea878ac1",
+              "leftValue": "={{ $json.imageUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e2184aef-e3bd-42c4-8ec5-b3397f21efb4",
+      "name": "IF Has Image World",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        14128,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json._chatId }}",
+        "text": "=🌍 <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+        "additionalFields": {
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "5502504b-ab78-4dbe-87df-482a03349104",
+      "name": "Send World Text",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14400,
+        2672
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "=🌍 <b>World digest complete!</b> All world articles have been sent.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "e412769e-7dad-43db-8d5e-10549a9752b7",
+      "name": "Send World Done",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        13504,
+        2320
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// OG Image Scraper — Microlink-free, no spread, no Proxy risk\nconst item = $input.item;\n\n// Pull only primitives we need — NO spread operator\nconst link     = String(item.json.link    || item.json.url || '');\nconst title    = String(item.json.title   || '');\nconst summary  = String(item.json.summary || item.json.contentSnippet || '');\nconst category = String(item.json._category || 'national');\n\n// chatId: try item first, fall back to Telegram Trigger\nconst chatId =\n  item.json._chatId ||\n  $('Telegram Trigger').first()?.json?.callback_query?.message?.chat?.id ||\n  null;\n\n// imageUrl from RSS (Parse Groq should already set this)\nlet imageUrl = item.json.imageUrl ? String(item.json.imageUrl) : null;\n\n// HTML escape — Telegram HTML mode\nfunction esc(s) {\n  return String(s || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;');\n}\n\n// Scrape OG image only when RSS gave us nothing\nif (!imageUrl && link) {\n  try {\n    const res = await fetch(link, {\n      method: 'GET',\n      headers: {\n        'User-Agent': 'Mozilla/5.0 (compatible; TelegramDigestBot/1.0)',\n        'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',\n      },\n      redirect: 'follow',\n      signal: AbortSignal.timeout(8000),\n    });\n\n    if (res.ok) {\n      const html = await res.text();\n\n      // og:image (both attribute orders)\n      imageUrl =\n        html.match(/<meta[^>]+property=[\"']og:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+property=[\"']og:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+name=[\"']twitter:image[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+content=[\"'](https?:[^\"'>\\s]+)[\"'][^>]+name=[\"']twitter:image[\"']/i)?.[1] ||\n        html.match(/<meta[^>]+property=[\"']og:image:secure_url[\"'][^>]+content=[\"'](https?:[^\"'>\\s]+)[\"']/i)?.[1] ||\n        null;\n\n      if (imageUrl) imageUrl = imageUrl.trim();\n    }\n  } catch (_) {\n    imageUrl = null;\n  }\n}\n\n// Must be absolute http(s)\nif (imageUrl && !/^https?:\\/\\//i.test(imageUrl)) imageUrl = null;\n\nconst safeTitle = esc(title);\nconst safeSummary = (() => {\n  const s = esc(summary || 'No summary available.');\n  return s.length > 750 ? s.slice(0, 747) + '...' : s;\n})();\n\n// Return 100% fresh plain object — no spread, no Proxy, no nested 'json' keys\nreturn {\n  json: {\n    title,\n    link,\n    summary,\n    _chatId: chatId,\n    _category: category,\n    imageUrl: imageUrl,\n    _hasImage: imageUrl !== null,\n    _safeTitle: safeTitle,\n    _safeSummary: safeSummary,\n    _safeLink: link,\n  }\n};"
+      },
+      "id": "62e10fd7-813a-4652-b44e-64f0ff758bc7",
+      "name": "OG Scrape National",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13856,
+        3440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32d14038-d609-41ea-9300-88cf8a24f722",
+              "leftValue": "={{ $json.imageUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8a58e4e6-cf1b-4856-9194-94c0422785a8",
+      "name": "IF Has Image National",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        14128,
+        3440
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json._chatId }}",
+        "text": "=🇮🇳 <b>{{ $json._safeTitle }}</b>\n\n{{ $json._safeSummary }}\n\n<a href=\"{{ $json._safeLink }}\">🔗 Read more</a>",
+        "additionalFields": {
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "551510b0-da36-4b08-b761-db31a7770fb4",
+      "name": "Send National Text",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        14384,
+        3536
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "=🇮🇳 <b>National digest complete!</b> All national articles have been sent.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "096cbf6a-58a8-46ea-b97a-a6f0fcffd874",
+      "name": "Send National Done",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        13472,
+        3248
+      ],
+      "credentials": {
+        "telegramApi": {}
+      }
+    },
+    {
+      "parameters": {},
+      "id": "73b98756-406d-4692-a518-fdaed3f2e493",
+      "name": "Limit Tech Done",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        13312,
+        1504
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9f75eff7-7d64-4385-8311-4333d5b95c5b",
+      "name": "Limit World Done",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        13280,
+        2320
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "8a8c8806-6eeb-4e48-b88a-c8c64976ee21",
+      "name": "Limit National Done",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        13248,
+        3248
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Detect Event Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Event Type": {
+      "main": [
+        [
+          {
+            "node": "Send Category Keyboard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Category Keyboard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback Query": {
+      "main": [
+        [
+          {
+            "node": "Route by Category",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Menu Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Category": {
+      "main": [
+        [
+          {
+            "node": "RSS TechCrunch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Ars Technica",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS The Verge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Hacker News",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS BBC World",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Reuters World",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Al Jazeera",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS The Guardian",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS DW World",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS NDTV",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Times of India",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS The Hindu",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Hindustan Times",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Indian Express",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS TechCrunch": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Hacker News": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS The Verge": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Deduplicate Tech": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Groq Tech": {
+      "main": [
+        [
+          {
+            "node": "Loop Tech Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Tech Message": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Tech Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between Tech Messages": {
+      "main": [
+        [
+          {
+            "node": "Loop Tech Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Tech Articles": {
+      "main": [
+        [
+          {
+            "node": "Limit Tech Done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OG Scrape Tech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS NDTV": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Times of India": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS The Hindu": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS Hindustan Times": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "RSS Indian Express": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Deduplicate National": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Groq National": {
+      "main": [
+        [
+          {
+            "node": "Loop National Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send National Message": {
+      "main": [
+        [
+          {
+            "node": "Wait Between National Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between National Messages": {
+      "main": [
+        [
+          {
+            "node": "Loop National Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop National Articles": {
+      "main": [
+        [
+          {
+            "node": "Limit National Done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OG Scrape National",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate Tech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate World",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate National",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse Groq Tech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Parse Groq World",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Parse Groq National",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate World": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop World Articles": {
+      "main": [
+        [
+          {
+            "node": "Limit World Done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OG Scrape World",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS BBC World": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Al Jazeera": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS DW World": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Parse Groq World": {
+      "main": [
+        [
+          {
+            "node": "Loop World Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Ars Technica": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS Reuters World": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS The Guardian": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Wait Between World Messages": {
+      "main": [
+        [
+          {
+            "node": "Loop World Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OG Scrape Tech": {
+      "main": [
+        [
+          {
+            "node": "IF Has Image Tech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Has Image Tech": {
+      "main": [
+        [
+          {
+            "node": "Send Tech Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Tech Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Tech Text": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Tech Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OG Scrape World": {
+      "main": [
+        [
+          {
+            "node": "IF Has Image World",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Has Image World": {
+      "main": [
+        [
+          {
+            "node": "Send World Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send World Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send World Text": {
+      "main": [
+        [
+          {
+            "node": "Wait Between World Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OG Scrape National": {
+      "main": [
+        [
+          {
+            "node": "IF Has Image National",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Has Image National": {
+      "main": [
+        [
+          {
+            "node": "Send National Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send National Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send National Text": {
+      "main": [
+        [
+          {
+            "node": "Wait Between National Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send World Message": {
+      "main": [
+        [
+          {
+            "node": "Wait Between World Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit Tech Done": {
+      "main": [
+        [
+          {
+            "node": "Send Tech Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit World Done": {
+      "main": [
+        [
+          {
+            "node": "Send World Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit National Done": {
+      "main": [
+        [
+          {
+            "node": "Send National Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
