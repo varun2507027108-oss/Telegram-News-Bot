@@ -24,39 +24,39 @@ When a user interacts with the bot on Telegram, the workflow executes the follow
 Here is a breakdown of every node in the workflow, organized by function:
 
 ### 1. Entry & Event Handling
-* **Telegram Trigger:** Listens to incoming events from Telegram (commands and keyboard button clicks).
-* **Detect Event Type (Switch):** Routes logic based on what the user did:
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Telegram Trigger:** Listens to incoming events from Telegram (commands and keyboard button clicks).
+* <img src="./assets/switch.svg" width="18" height="18" valign="middle"/> **Detect Event Type (Switch):** Routes logic based on what the user did:
   * Shows the category menu if they typed `/news` or `/start`.
   * Triggers the news-gathering pipeline if they clicked a category button (callback query).
 
 ### 2. Category Selection UI
-* **Send Category Keyboard (Telegram):** Sends the inline button menu (Tech, World, National).
-* **Answer Callback Query (Telegram):** Acknowledges the button click in Telegram to remove the loading spinner from the user's screen.
-* **Edit Menu Message (Telegram):** Modifies the menu keyboard message into a temporary status message (e.g., *⏳ Fetching Tech news, please wait…*) so the chat stays clean.
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Send Category Keyboard (Telegram):** Sends the inline button menu (Tech, World, National).
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Answer Callback Query (Telegram):** Acknowledges the button click in Telegram to remove the loading spinner from the user's screen.
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Edit Menu Message (Telegram):** Modifies the menu keyboard message into a temporary status message (e.g., *⏳ Fetching Tech news, please wait…*) so the chat stays clean.
 
 ### 3. News Ingestion (RSS Feeds)
-* **RSS Feeds (RSS Feed Read):** Multiple parallel nodes query feed URLs:
+* <img src="./assets/rss.svg" width="18" height="18" valign="middle"/> **RSS Feeds (RSS Feed Read):** Multiple parallel nodes query feed URLs:
   * **Tech:** *TechCrunch, Ars Technica, Hacker News, The Verge*.
   * **World:** *BBC News, Reuters, Al Jazeera, Deutsche Welle (DW), The Guardian*.
   * **National:** *NDTV, Times of India, The Hindu, Hindustan Times, Indian Express*.
-* **Merge, Merge1, Merge2 (Merge):** Combines the parallel streams from all RSS nodes into a single array.
+* <img src="./assets/merge.svg" width="18" height="18" valign="middle"/> **Merge, Merge1, Merge2 (Merge):** Combines the parallel streams from all RSS nodes into a single array.
 
 ### 4. Processing & AI Summarization
-* **Deduplicate Nodes (Code):** Custom JavaScript that eliminates duplicate links, applies a spam/promotional word blocklist, and limits the output to the top 10 newest articles.
-* **Basic LLM Chain Nodes (LangChain):** Combines the prompt instructions and coordinates text generation.
-* **Groq Chat Model Nodes (LangChain):** Connects to **Groq** using the `llama-3.3-70b-versatile` model to write a strict, formatting-free 3-4 sentence summary of each article.
-* **Parse Groq Nodes (Code):** Extracts the text response from the LLM chain and merges it back into the article object along with any available RSS images.
+* <img src="./assets/code.svg" width="18" height="18" valign="middle"/> **Deduplicate Nodes (Code):** Custom JavaScript that eliminates duplicate links, applies a spam/promotional word blocklist, and limits the output to the top 10 newest articles.
+* <img src="./assets/groq.svg" width="18" height="18" valign="middle"/> **Basic LLM Chain Nodes (LangChain):** Combines the prompt instructions and coordinates text generation.
+* <img src="./assets/groq.svg" width="18" height="18" valign="middle"/> **Groq Chat Model Nodes (LangChain):** Connects to **Groq** using the `llama-3.3-70b-versatile` model to write a strict, formatting-free 3-4 sentence summary of each article.
+* <img src="./assets/code.svg" width="18" height="18" valign="middle"/> **Parse Groq Nodes (Code):** Extracts the text response from the LLM chain and merges it back into the article object along with any available RSS images.
 
 ### 5. Loop & Delivery
-* **Loop Articles (Split In Batches):** Loops through the 10 selected articles one-by-one.
-* **OG Scrape Nodes (Code):** Background HTTP scraper that fetches the article's web page and regex-extracts the metadata image tag (`og:image` or `twitter:image`) if the RSS didn't provide one.
-* **IF Has Image (IF):** Checks if a valid thumbnail image was retrieved.
-* **Send Message (Telegram):**
+* <img src="./assets/loop.svg" width="18" height="18" valign="middle"/> **Loop Articles (Split In Batches):** Loops through the 10 selected articles one-by-one.
+* <img src="./assets/code.svg" width="18" height="18" valign="middle"/> **OG Scrape Nodes (Code):** Background HTTP scraper that fetches the article's web page and regex-extracts the metadata image tag (`og:image` or `twitter:image`) if the RSS didn't provide one.
+* <img src="./assets/if.svg" width="18" height="18" valign="middle"/> **IF Has Image (IF):** Checks if a valid thumbnail image was retrieved.
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Send Message (Telegram):**
   * If an image exists: Sends a formatted photo card (**Send Message**) containing the image, bold title, summary, and article link.
   * If no image exists: Sends a text-only formatted card (**Send Text**).
-* **Wait Between Messages (Wait):** Pauses for 1 second between dispatches to avoid Telegram API rate limits.
-* **Limit Nodes (Limit):** Controls loop termination.
-* **Send Done (Telegram):** Replaces the temporary loading message with a digest completion indicator (e.g. *🖥️ Tech digest complete!*).
+* <img src="./assets/wait.svg" width="18" height="18" valign="middle"/> **Wait Between Messages (Wait):** Pauses for 1 second between dispatches to avoid Telegram API rate limits.
+* <img src="./assets/limit.svg" width="18" height="18" valign="middle"/> **Limit Nodes (Limit):** Controls loop termination.
+* <img src="./assets/telegram.svg" width="18" height="18" valign="middle"/> **Send Done (Telegram):** Replaces the temporary loading message with a digest completion indicator (e.g. *🖥️ Tech digest complete!*).
 
 ---
 
@@ -120,3 +120,12 @@ Selecting **National** fetches Indian news:
   <img src="./assets/8_national_article.png" alt="National Article Summary" width="280"/>
   <img src="./assets/9_national_complete.png" alt="National Digest Complete" width="280"/>
 </p>
+
+---
+
+## 🤖 Try It Out!
+
+You can test the live bot directly on Telegram:
+👉 **[@Khabri01bot](https://t.me/Khabri01bot)**
+
+*Note: Send `/news` to the bot to select a category and trigger the digest.*
