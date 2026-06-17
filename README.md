@@ -123,7 +123,7 @@ Selecting **National** fetches Indian news:
 
 ---
 
-TELEGRAM HAS BEEN CURRENTLY BANNED BY OUR GREAT GOV🥰
+##TELEGRAM HAS BEEN CURRENTLY BANNED BY OUR GREAT GOV🥰
 ## 🤖 Try It Out!
 
 You can test the live bot directly on Telegram:
