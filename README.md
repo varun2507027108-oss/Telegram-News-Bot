@@ -126,6 +126,7 @@ Selecting **National** fetches Indian news:
 ## 🤖 Try It Out!
 
 You can test the live bot directly on Telegram:
+TELEGRAM HAS BEEN CURRENTLY BANNED BY OUR GREAT GOV🥰
 👉 **[@Khabri01bot](https://t.me/Khabri01bot)**
 
 *Note: Send `/news` to the bot to select a category and trigger the digest.*
